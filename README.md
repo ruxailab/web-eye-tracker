@@ -1,1 +1,1 @@
-# web-eye-tracker
+# Web Eye Tracker
