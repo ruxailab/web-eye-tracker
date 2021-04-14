@@ -1,10 +1,12 @@
 from flask import Flask, request, Response
+from app.eye_tracker import main as eye_tracker
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def welcome():
-    return Response('Welcome to EyeLab', status=418, mimetype='application/json')
+    a = eye_tracker.setup()
+    return Response(f'Welcome to EyeLab {a}', status=418, mimetype='application/json')
 
 @app.route('/api/user/sessions')
 def get_user_sessions():
