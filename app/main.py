@@ -1,5 +1,7 @@
 from flask import Flask, request, Response
+
 from app.eye_tracker import main as eye_tracker
+from app.routes import session as session_route
 
 app = Flask(__name__)
 
@@ -18,8 +20,11 @@ def get_user_sessions():
 def session():
     if request.method == 'GET':
         return Response('Return a session by id passed on params', status=200, mimetype='application/json')
+    
+    # Create Session
     elif request.method == 'POST':
-        return Response('Create a session', status=201, mimetype='application/json')
+       return session_route.create_session()
+
     elif request.method == 'DELETE':
         return Response('Delete a session', status=200, mimetype='application/json')
     elif request.method == 'PATCH':
