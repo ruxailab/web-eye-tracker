@@ -1,7 +1,10 @@
 from flask import Flask, request, Response
-
+from pathlib import Path
+# from firebase_admin import storage
 from app.eye_tracker import main as eye_tracker
 from app.routes import session as session_route
+
+bucket = storage.bucket()
 
 app = Flask(__name__)
 
@@ -23,6 +26,11 @@ def session():
     
     # Create Session
     elif request.method == 'POST':
+    #    blob = bucket.blob('hello.txt')
+    #    outfile='hello.txt'
+    #    with open(outfile, 'rb') as my_file:
+    #        blob.upload_from_file(my_file)
+
        return session_route.create_session()
 
     elif request.method == 'DELETE':
