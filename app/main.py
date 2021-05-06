@@ -1,12 +1,14 @@
 from flask import Flask, request, Response
+from flask_cors import CORS
 from pathlib import Path
 # from firebase_admin import storage
 from app.eye_tracker import main as eye_tracker
 from app.routes import session as session_route
 
-bucket = storage.bucket()
+# bucket = storage.bucket()
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/', methods=['GET'])
 def welcome():
@@ -26,12 +28,7 @@ def session():
     
     # Create Session
     elif request.method == 'POST':
-    #    blob = bucket.blob('hello.txt')
-    #    outfile='hello.txt'
-    #    with open(outfile, 'rb') as my_file:
-    #        blob.upload_from_file(my_file)
-
-       return session_route.create_session()
+        return session_route.create_session()
 
     elif request.method == 'DELETE':
         return Response('Delete a session', status=200, mimetype='application/json')
