@@ -33,7 +33,7 @@ def session():
     
     # Update by ID
     elif request.method == 'PATCH':
-        return Response('Update a session', status=200, mimetype='application/json')
+        return session_route.update_session_by_id()
     
     return Response('Invalid request method for route', status=405, mimetype='application/json')
 

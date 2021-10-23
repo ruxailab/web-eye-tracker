@@ -81,3 +81,20 @@ def delete_session_by_id():
     session_id = request.args.__getitem__('id')
     db.delete_document(COLLECTION_NAME, session_id)
     return Response(f'Session deleted with id {session_id}', status=200, mimetype='application/json')
+
+def update_session_by_id():
+    id = request.form['id']
+    title = request.form['title']
+    description = request.form['description']
+    heatmap_url = request.form['heatmap_url']
+    callib_url = request.form['callib_url']
+
+    data = {
+        u'title': title,
+        u'description': description,
+        u'heatmap_url': heatmap_url,
+        u'callib_url': callib_url
+    }
+
+    db.update_document(COLLECTION_NAME, id, data)
+    return Response(f'Session updated with id {id}', status=200, mimetype='application/json')

@@ -17,3 +17,7 @@ def get_document(collection, doc_id):
 def delete_document(collection, doc_id):
     db = firestore.client()
     return db.collection(collection).document(doc_id).delete()
+
+def update_document(collection, doc_id, data):
+    db = firestore.client()
+    return db.collection(collection).document(doc_id).update(data)
