@@ -13,3 +13,7 @@ def get_documents(collection, field, op, value):
 def get_document(collection, doc_id):
     db = firestore.client()
     return db.collection(collection).document(doc_id).get()
+
+def delete_document(collection, doc_id):
+    db = firestore.client()
+    return db.collection(collection).document(doc_id).delete()

@@ -29,7 +29,7 @@ def session():
 
     # Delete by ID
     elif request.method == 'DELETE':
-        return Response('Delete a session', status=200, mimetype='application/json')
+        return session_route.delete_session_by_id()
     
     # Update by ID
     elif request.method == 'PATCH':

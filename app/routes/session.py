@@ -76,3 +76,8 @@ def get_session_by_id():
         return Response(json.dumps(session), status=200, mimetype='application/json')
     else:
         return Response('Session does not exist', status=404, mimetype='application/json')
+
+def delete_session_by_id():
+    session_id = request.args.__getitem__('id')
+    db.delete_document(COLLECTION_NAME, session_id)
+    return Response(f'Session deleted with id {session_id}', status=200, mimetype='application/json')
