@@ -15,13 +15,13 @@ def get_user_sessions():
     if request.method == 'GET':
         return session_route.get_user_sessions()
     
-    return 'Invalid request method for route'
+    return Response('Invalid request method for route', status=405, mimetype='application/json')
 
 @app.route('/api/session', methods=['GET','POST','PATCH','DELETE'])
 def session():
     # Get by ID
     if request.method == 'GET':
-        return Response('Return a session by id passed on params', status=200, mimetype='application/json')
+        return session_route.get_session_by_id()
     
     # Create Session
     elif request.method == 'POST':
@@ -35,18 +35,18 @@ def session():
     elif request.method == 'PATCH':
         return Response('Update a session', status=200, mimetype='application/json')
     
-    return 'Invalid request method for route'
+    return Response('Invalid request method for route', status=405, mimetype='application/json')
 
 @app.route('/api/session/results/heatmap', methods=['GET'])
 def manage_heatmap():
     if request.method == 'GET':
         # TO DO: Generate heatmap
         return Response('Generated heatmap', status=200, mymetype='application/json')
-    return 'Invalid request method for route'
+    return Response('Invalid request method for route', status=405, mimetype='application/json')
 
 @app.route('/api/calibrate', methods=['POST'])
 def calibrate():
     if request.method == 'POST':
         # TO DO: Do system calibration
         return Response('System calibrated', status=200, mymetype='application/json')
-    return 'Invalid request method for route'
+    return Response('Invalid request method for route', status=405, mimetype='application/json')

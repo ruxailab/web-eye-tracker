@@ -9,3 +9,7 @@ def get_documents(collection, field, op, value):
     if field is not None and op is not None and value is not None:
         return db.collection(collection).where(field, op, value).stream()
     return db.collection(collection).stream()
+
+def get_document(collection, doc_id):
+    db = firestore.client()
+    return db.collection(collection).document(doc_id).get()

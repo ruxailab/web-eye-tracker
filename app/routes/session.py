@@ -39,6 +39,7 @@ def create_session():
 
     # Save session on database
     session = Session(
+        id=session_id,
         title=title, 
         description=description, 
         user_id=user_id, 
@@ -64,4 +65,14 @@ def get_user_sessions():
         sessions.append(
             doc.to_dict()
         )
-    return Response(json.dumps(sessions), status=201, mimetype='application/json')
+    return Response(json.dumps(sessions), status=200, mimetype='application/json')
+
+def get_session_by_id():
+    session_id = request.args.__getitem__('id')
+    doc = db.get_document(COLLECTION_NAME, doc_id=session_id)
+    
+    if doc.exists:
+        session = doc.to_dict()
+        return Response(json.dumps(session), status=200, mimetype='application/json')
+    else:
+        return Response('Session does not exist', status=404, mimetype='application/json')
