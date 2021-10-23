@@ -13,3 +13,4 @@ def save_file_locally(file, folder):
     os.makedirs(UPLOAD_FOLDER+folder, exist_ok=True)
     filename = secure_filename(file.filename)
     file.save(os.path.join(app.config['UPLOAD_FOLDER']+folder, filename))
+    return f'{folder}\{filename}'
