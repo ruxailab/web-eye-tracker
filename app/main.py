@@ -9,11 +9,13 @@ CORS(app)
 def welcome():
     return Response(f'Welcome to EyeLab!', status=200, mimetype='application/json')
 
-@app.route('/api/user/sessions')
+@app.route('/api/user/sessions', methods=['GET'])
 def get_user_sessions():
-    # Pass userid as parameter on the route so we can query by user
-    print('REQUEST', request.args.__getitem__('userid'))
-    return Response('User sessions', status=200, mimetype='application/json')
+    # Get user sessions
+    if request.method == 'GET':
+        return session_route.get_user_sessions()
+    
+    return 'Invalid request method for route'
 
 @app.route('/api/session', methods=['GET','POST','PATCH','DELETE'])
 def session():

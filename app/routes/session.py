@@ -3,9 +3,10 @@ from app.services.storage import save_file_locally
 from app.models.session import Session
 from app.services import database as db
 import time
-import sys
+import json
 
 ALLOWED_EXTENSIONS = {'txt', 'webm'}
+COLLECTION_NAME = u'session'
 
 app = Flask(__name__)
 
@@ -20,7 +21,6 @@ def create_session():
     if 'webcamfile' not in request.files or 'screenfile' not in request.files:
         return Response('Error: Files not found on the request', status=400, mimetype='application/json')
 
-    print('Hello world!', file=sys.stderr)
     webcam_file = request.files['webcamfile']
     screen_file = request.files['screenfile']
     title = request.form['title']
@@ -50,6 +50,18 @@ def create_session():
         callib_url=''
     )
     
-    db.create_document(u'session', session_id, session.to_dict())
+    db.create_document(COLLECTION_NAME, session_id, session.to_dict())
 
     return Response('Session Created!', status=201, mimetype='application/json')
+
+def get_user_sessions():
+    user_id = request.args.__getitem__('user_id')
+    field = u'user_id' 
+    op = u'=='
+    docs =  db.get_documents(COLLECTION_NAME, field, op, user_id)
+    sessions = []
+    for doc in docs:
+        sessions.append(
+            doc.to_dict()
+        )
+    return Response(json.dumps(sessions), status=201, mimetype='application/json')
