@@ -2,3 +2,4 @@
 **/__pycache__
 **.pyc
 serviceAccountKey.json
+/public/videos

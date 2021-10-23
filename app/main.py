@@ -1,6 +1,5 @@
 from flask import Flask, request, Response
 from flask_cors import CORS
-from app.eye_tracker import main as eye_tracker
 from app.routes import session as session_route
 
 app = Flask(__name__)
@@ -8,7 +7,6 @@ CORS(app)
 
 @app.route('/', methods=['GET'])
 def welcome():
-    # a = eye_tracker.setup()
     return Response(f'Welcome to EyeLab!', status=200, mimetype='application/json')
 
 @app.route('/api/user/sessions')
