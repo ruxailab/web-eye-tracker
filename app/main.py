@@ -1,6 +1,7 @@
 from flask import Flask, request, Response
 from flask_cors import CORS
 from app.routes import session as session_route
+from app.routes import calib as calib_route
 
 app = Flask(__name__)
 CORS(app)
@@ -47,6 +48,6 @@ def manage_heatmap():
 @app.route('/api/calibrate', methods=['POST'])
 def calibrate():
     if request.method == 'POST':
-        # TO DO: Do system calibration
-        return Response('System calibrated', status=200, mymetype='application/json')
+        # Do system calibration
+        return calib_route.save_calib()
     return Response('Invalid request method for route', status=405, mimetype='application/json')
