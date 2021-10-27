@@ -4,6 +4,9 @@ from app.models.session import Session
 from app.services import database as db
 import time
 import json
+import csv
+from pathlib import Path
+import os
 
 ALLOWED_EXTENSIONS = {'txt', 'webm'}
 COLLECTION_NAME = u'session'
@@ -17,7 +20,7 @@ def allowed_file(filename):
 
 
 def create_session():
-    # Get files from request
+    # # Get files from request
     if 'webcamfile' not in request.files or 'screenfile' not in request.files:
         return Response('Error: Files not found on the request', status=400, mimetype='application/json')
 
@@ -27,7 +30,7 @@ def create_session():
     description = request.form['description']
     website_url = request.form['website_url']
     user_id = request.form['user_id']
-    calib_points = request.form['calib_points']
+    calib_points = json.loads(request.form['calib_points'])
     timestamp = time.time()
     session_id = f'\\{timestamp}{title}'
 
@@ -49,10 +52,23 @@ def create_session():
         screen_record_url=screen_url, 
         webcam_record_url=webcam_url, 
         heatmap_url='', 
-        calib_points=json.loads(calib_points)
+        calib_points=calib_points
     )
     
     db.create_document(COLLECTION_NAME, session_id, session.to_dict())
+    
+    # Generate csv dataset
+    os.makedirs(f'{Path().absolute()}\\public\\training\\{session_id}\\', exist_ok=True)
+    csv_file = f'{Path().absolute()}\\public\\training\\{session_id}\\train_data.csv'
+    csv_columns = ['left_iris_x','left_iris_y','right_iris_x', 'right_iris_y', 'mouse_x', 'mouse_y']
+    try:
+        with open(csv_file, 'w') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+            writer.writeheader()
+            for data in calib_points:
+                writer.writerow(data)
+    except IOError:
+        print("I/O error")
 
     return Response('Session Created!', status=201, mimetype='application/json')
 
