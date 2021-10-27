@@ -1,5 +1,5 @@
 class Session:
-    def __init__(self, id, title, description, user_id, created_date, website_url, screen_record_url, webcam_record_url, heatmap_url, callib_url):
+    def __init__(self, id, title, description, user_id, created_date, website_url, screen_record_url, webcam_record_url, heatmap_url, calib_points):
         self.id = id
         self.title = title
         self.description = description
@@ -9,7 +9,7 @@ class Session:
         self.screen_record_url = screen_record_url
         self.webcam_record_url = webcam_record_url
         self.heatmap_url = heatmap_url
-        self.callib_url = callib_url
+        self.calib_points = calib_points
 
     def to_dict(self):
         return {
@@ -22,5 +22,5 @@ class Session:
             u'screen_record_url': self.screen_record_url,
             u'webcam_record_url': self.webcam_record_url,
             u'heatmap_url': self.heatmap_url,
-            u'callib_url': self.callib_url
+            u'callib_points': self.calib_points
         }

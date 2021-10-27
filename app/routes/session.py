@@ -27,6 +27,7 @@ def create_session():
     description = request.form['description']
     website_url = request.form['website_url']
     user_id = request.form['user_id']
+    calib_points = request.form['calib_points']
     timestamp = time.time()
     session_id = f'\\{timestamp}{title}'
 
@@ -48,7 +49,7 @@ def create_session():
         screen_record_url=screen_url, 
         webcam_record_url=webcam_url, 
         heatmap_url='', 
-        callib_url=''
+        calib_points=json.loads(calib_points)
     )
     
     db.create_document(COLLECTION_NAME, session_id, session.to_dict())
@@ -87,13 +88,11 @@ def update_session_by_id():
     title = request.form['title']
     description = request.form['description']
     heatmap_url = request.form['heatmap_url']
-    callib_url = request.form['callib_url']
 
     data = {
         u'title': title,
         u'description': description,
         u'heatmap_url': heatmap_url,
-        u'callib_url': callib_url
     }
 
     db.update_document(COLLECTION_NAME, id, data)
