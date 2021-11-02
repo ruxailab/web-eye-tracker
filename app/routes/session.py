@@ -31,6 +31,7 @@ def create_session():
     website_url = request.form['website_url']
     user_id = request.form['user_id']
     calib_points = json.loads(request.form['calib_points'])
+    iris_points = json.loads(request.form['iris_points'])
     timestamp = time.time()
     session_id = f'\\{timestamp}{title}'
 
@@ -52,7 +53,8 @@ def create_session():
         screen_record_url=screen_url, 
         webcam_record_url=webcam_url, 
         heatmap_url='', 
-        calib_points=calib_points
+        calib_points=calib_points,
+        iris_points=iris_points
     )
     
     db.create_document(COLLECTION_NAME, session_id, session.to_dict())
