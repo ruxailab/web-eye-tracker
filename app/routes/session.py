@@ -59,7 +59,7 @@ def create_session():
     
     db.create_document(COLLECTION_NAME, session_id, session.to_dict())
     
-    # Generate csv dataset
+    # Generate csv dataset of calibration points
     os.makedirs(f'{Path().absolute()}\\public\\training\\{session_id}\\', exist_ok=True)
     csv_file = f'{Path().absolute()}\\public\\training\\{session_id}\\train_data.csv'
     csv_columns = ['left_iris_x','left_iris_y','right_iris_x', 'right_iris_y', 'mouse_x', 'mouse_y']
@@ -68,6 +68,19 @@ def create_session():
             writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
             writer.writeheader()
             for data in calib_points:
+                writer.writerow(data)
+    except IOError:
+        print("I/O error")
+
+    # Generate csv of iris points of session
+    os.makedirs(f'{Path().absolute()}\\public\\sessions\\{session_id}\\', exist_ok=True)
+    csv_file = f'{Path().absolute()}\\public\\sessions\\{session_id}\\session_data.csv'
+    csv_columns = ['left_iris_x','left_iris_y','right_iris_x', 'right_iris_y']
+    try:
+        with open(csv_file, 'w') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+            writer.writeheader()
+            for data in iris_points:
                 writer.writerow(data)
     except IOError:
         print("I/O error")
