@@ -152,4 +152,4 @@ def session_results_record():
     if doc.exists:
         session = doc.to_dict()
 
-    return send_file(f'{Path().absolute()}\\public\\videos\{session["screen_record_url"]}')
+    return send_file(f'{Path().absolute()}\\public\\videos\{session["screen_record_url"]}', mimetype='video/webm')
