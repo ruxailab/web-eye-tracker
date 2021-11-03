@@ -2,6 +2,7 @@ from flask import Flask, request, Response
 from app.services.storage import save_file_locally
 from app.models.session import Session
 from app.services import database as db
+from app.services import gaze_tracker
 import time
 import json
 import csv
@@ -128,3 +129,26 @@ def update_session_by_id():
 
     db.update_document(COLLECTION_NAME, id, data)
     return Response(f'Session updated with id {id}', status=200, mimetype='application/json')
+
+def session_results():
+    session_id = request.args.__getitem__('id')
+    
+    # Train Model
+    data = gaze_tracker.train_model(session_id)
+    print('data x', len(data['x']))
+    print('data y', len(data['y']))
+    
+    # To do: return gaze x and y on response as json
+    gaze = []
+    for i in range(len(data['x'])):
+        gaze.append({
+            'x': data['x'][i],
+            'y': data['y'][i]
+        })
+
+    return Response(json.dumps(gaze), status=200, mimetype='application/json')
+
+def session_results_heatmap():
+    session_id = request.args.__getitem__('id')
+    # TO DO
+    return Response(f'Heatmap To be Done', status=200, mimetype='application/json')
