@@ -37,11 +37,10 @@ def session():
     
     return Response('Invalid request method for route', status=405, mimetype='application/json')
 
-@app.route('/api/session/results/heatmap', methods=['GET'])
-def manage_heatmap():
+@app.route('/api/session/results/record', methods=['GET'])
+def manage_recording():
     if request.method == 'GET':
-        # TO DO: Generate heatmap
-        return session_route.session_results_heatmap()
+        return session_route.session_results_record()
     return Response('Invalid request method for route', status=405, mimetype='application/json')
 
 @app.route('/api/session/results', methods=['GET'])
@@ -49,4 +48,3 @@ def manage_results():
     if request.method == 'GET':
         return session_route.session_results()
     return Response('Invalid request method for route', status=405, mimetype='application/json')
-

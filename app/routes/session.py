@@ -1,4 +1,4 @@
-from flask import Flask, request, Response
+from flask import Flask, request, Response, send_file
 from app.services.storage import save_file_locally
 from app.models.session import Session
 from app.services import database as db
@@ -146,7 +146,10 @@ def session_results():
 
     return Response(json.dumps(gaze), status=200, mimetype='application/json')
 
-def session_results_heatmap():
+def session_results_record():
     session_id = request.args.__getitem__('id')
-    # TO DO
-    return Response(f'Heatmap To be Done', status=200, mimetype='application/json')
+    doc = db.get_document(COLLECTION_NAME, doc_id=session_id)
+    if doc.exists:
+        session = doc.to_dict()
+
+    return send_file(f'{Path().absolute()}\\public\\videos\{session["screen_record_url"]}')
