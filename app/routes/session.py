@@ -34,12 +34,12 @@ def create_session():
     calib_points = json.loads(request.form['calib_points'])
     iris_points = json.loads(request.form['iris_points'])
     timestamp = time.time()
-    session_id = f'\\{timestamp}{title}'
+    session_id = f'{timestamp}{title}'
 
     # Check if extension is valid
     if webcam_file and allowed_file(webcam_file.filename) and screen_file and allowed_file(screen_file.filename):
-        webcam_url = save_file_locally(webcam_file, session_id)
-        screen_url = save_file_locally(screen_file, session_id)
+        webcam_url = save_file_locally(webcam_file, f'\\{session_id}')
+        screen_url = save_file_locally(screen_file, f'\\{session_id}')
     else:
         return Response('Error: Files do not follow the extension guidelines', status=400, mimetype='application/json')
 
@@ -119,12 +119,10 @@ def update_session_by_id():
     id = request.form['id']
     title = request.form['title']
     description = request.form['description']
-    heatmap_url = request.form['heatmap_url']
 
     data = {
         u'title': title,
         u'description': description,
-        u'heatmap_url': heatmap_url,
     }
 
     db.update_document(COLLECTION_NAME, id, data)
