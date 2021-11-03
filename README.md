@@ -53,6 +53,9 @@ After having it created you will need to generate a service account json key. Sa
 
 This project has been configured to be deployed in production on Heroku. If you want to deploy it there, you will need to first create a project and link it to the code.
 
+### 6. GitHub CI/CD
+
+CI/CD from the github actions workflows is implmented for deploy on heroku. If you want to use the workflow for repository you can edit *.github/workflows/main.yml* file with your settings.
 
 ## 🧑‍🤝‍🧑 Contributing
 
