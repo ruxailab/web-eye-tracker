@@ -133,8 +133,6 @@ def session_results():
     
     # Train Model
     data = gaze_tracker.train_model(session_id)
-    print('data x', len(data['x']))
-    print('data y', len(data['y']))
     
     # To do: return gaze x and y on response as json
     gaze = []
