@@ -1,6 +1,7 @@
 /.virtualenv
 **/__pycache__
 **.pyc
+.env
 serviceAccountKey.json
 /public/videos
 /public/training
