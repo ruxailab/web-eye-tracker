@@ -38,8 +38,8 @@ def create_session():
 
     # Check if extension is valid
     if webcam_file and allowed_file(webcam_file.filename) and screen_file and allowed_file(screen_file.filename):
-        webcam_url = save_file_locally(webcam_file, f'\\{session_id}')
-        screen_url = save_file_locally(screen_file, f'\\{session_id}')
+        webcam_url = save_file_locally(webcam_file, f'/{session_id}')
+        screen_url = save_file_locally(screen_file, f'/{session_id}')
     else:
         return Response('Error: Files do not follow the extension guidelines', status=400, mimetype='application/json')
 
@@ -61,8 +61,8 @@ def create_session():
     db.create_document(COLLECTION_NAME, session_id, session.to_dict())
     
     # Generate csv dataset of calibration points
-    os.makedirs(f'{Path().absolute()}\\public\\training\\{session_id}\\', exist_ok=True)
-    csv_file = f'{Path().absolute()}\\public\\training\\{session_id}\\train_data.csv'
+    os.makedirs(f'{Path().absolute()}/public/training/{session_id}/', exist_ok=True)
+    csv_file = f'{Path().absolute()}/public/training/{session_id}/train_data.csv'
     csv_columns = ['left_iris_x','left_iris_y','right_iris_x', 'right_iris_y', 'mouse_x', 'mouse_y']
     try:
         with open(csv_file, 'w') as csvfile:
@@ -74,8 +74,8 @@ def create_session():
         print("I/O error")
 
     # Generate csv of iris points of session
-    os.makedirs(f'{Path().absolute()}\\public\\sessions\\{session_id}\\', exist_ok=True)
-    csv_file = f'{Path().absolute()}\\public\\sessions\\{session_id}\\session_data.csv'
+    os.makedirs(f'{Path().absolute()}/public/sessions/{session_id}/', exist_ok=True)
+    csv_file = f'{Path().absolute()}/public/sessions/{session_id}/session_data.csv'
     csv_columns = ['left_iris_x','left_iris_y','right_iris_x', 'right_iris_y']
     try:
         with open(csv_file, 'w') as csvfile:
@@ -150,4 +150,4 @@ def session_results_record():
     if doc.exists:
         session = doc.to_dict()
 
-    return send_file(f'{Path().absolute()}\\public\\videos\{session["screen_record_url"]}', mimetype='video/webm')
+    return send_file(f'{Path().absolute()}/public/videos/{session["screen_record_url"]}', mimetype='video/webm')

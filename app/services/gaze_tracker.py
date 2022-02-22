@@ -7,8 +7,8 @@ from pathlib import Path
 
 def train_model(session_id):
     # Download dataset
-    dataset_train_path = f'{Path().absolute()}\\public\\training\\{session_id}\\train_data.csv'
-    dataset_session_path = f'{Path().absolute()}\\public\\sessions\\{session_id}\\session_data.csv'
+    dataset_train_path = f'{Path().absolute()}/public/training/{session_id}/train_data.csv'
+    dataset_session_path = f'{Path().absolute()}/public/sessions/{session_id}/session_data.csv'
 
     # Importing data from csv
     raw_dataset = pd.read_csv(dataset_train_path)
