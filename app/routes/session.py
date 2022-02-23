@@ -81,7 +81,7 @@ def create_session():
         f'{Path().absolute()}/public/sessions/{session_id}/', exist_ok=True)
     csv_file = f'{Path().absolute()}/public/sessions/{session_id}/session_data.csv'
     csv_columns = ['left_iris_x', 'left_iris_y',
-                   'right_iris_x', 'right_iris_y']
+                   'right_iris_x', 'right_iris_y', 'moment_in_time']
     try:
         with open(csv_file, 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
@@ -144,12 +144,13 @@ def session_results():
     # Train Model
     data = gaze_tracker.train_model(session_id)
 
-    # To do: return gaze x and y on response as json
+    # return gaze x and y on response
     gaze = []
     for i in range(len(data['x'])):
         gaze.append({
             'x': data['x'][i],
-            'y': data['y'][i]
+            'y': data['y'][i],
+            'moment_in_time': data['moment_in_time'][i],
         })
 
     return Response(json.dumps(gaze), status=200, mimetype='application/json')
