@@ -3,6 +3,7 @@ from app.services.storage import save_file_locally
 from app.models.session import Session
 from app.services import database as db
 from app.services import gaze_tracker
+from firebase_admin import firestore
 import time
 import json
 import csv
@@ -138,22 +139,48 @@ def update_session_by_id():
     return Response(f'Session updated with id {id}', status=200, mimetype='application/json')
 
 
+def save_session_results(session_id, results, result_id):
+    obj = {}
+    obj[f'{result_id}'] = results
+    data = {
+        u'session_results': firestore.ArrayUnion([obj])
+    }
+    try:
+        db.update_document(COLLECTION_NAME, session_id, data)
+        return True
+    except:
+        return False
+
+
 def session_results():
     session_id = request.args.__getitem__('id')
+    is_new_session = request.args.__getitem__('is_new_session')
 
-    # Train Model
-    data = gaze_tracker.train_model(session_id)
+    # Check if session results already exists
+    doc = db.get_document(COLLECTION_NAME, doc_id=session_id)
 
-    # return gaze x and y on response
-    gaze = []
-    for i in range(len(data['x'])):
-        gaze.append({
-            'x': data['x'][i],
-            'y': data['y'][i],
-            'moment_in_time': data['moment_in_time'][i],
-        })
+    if doc.exists:
+        session = doc.to_dict()
+        if is_new_session == 'true':
+            # Train Model
+            data = gaze_tracker.train_model(session_id)
 
-    return Response(json.dumps(gaze), status=200, mimetype='application/json')
+            # return gaze x and y
+            gaze = []
+            for i in range(len(data['x'])):
+                gaze.append({
+                    'x': data['x'][i],
+                    'y': data['y'][i],
+                    'moment_in_time': data['moment_in_time'][i],
+                })
+            # save new results to session
+            timestamp = time.time()
+            save_session_results(session_id, gaze, timestamp)
+            return Response(json.dumps(gaze), status=200, mimetype='application/json')
+        elif session.get("session_results"):
+            return Response(json.dumps(session.get("session_results")), status=200, mimetype='application/json')
+        else:
+            return Response(json.dumps([]), status=200, mimetype='application/json')
 
 
 def session_results_record():
