@@ -65,7 +65,7 @@ def create_session():
     os.makedirs(
         f'{Path().absolute()}/public/training/{session_id}/', exist_ok=True)
     csv_file = f'{Path().absolute()}/public/training/{session_id}/train_data.csv'
-    csv_columns = ['left_iris_x', 'left_iris_y',
+    csv_columns = ['timestamp', 'left_iris_x', 'left_iris_y',
                    'right_iris_x', 'right_iris_y', 'mouse_x', 'mouse_y']
     try:
         with open(csv_file, 'w') as csvfile:
@@ -80,7 +80,7 @@ def create_session():
     os.makedirs(
         f'{Path().absolute()}/public/sessions/{session_id}/', exist_ok=True)
     csv_file = f'{Path().absolute()}/public/sessions/{session_id}/session_data.csv'
-    csv_columns = ['left_iris_x', 'left_iris_y',
+    csv_columns = ['timestamp', 'left_iris_x', 'left_iris_y',
                    'right_iris_x', 'right_iris_y']
     try:
         with open(csv_file, 'w') as csvfile:
