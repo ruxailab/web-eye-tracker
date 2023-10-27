@@ -29,15 +29,12 @@ class EyeInfo:
 
             self.calib_points = post_calib
 
-    
-
     def init_screen_resolution(self):
         root = tk.Tk()
         root.attributes('-fullscreen', True)
         self.screen_width = root.winfo_screenwidth()
         self.screen_height = root.winfo_screenheight()
         root.destroy()
-
 
     def init_points(self):
         self.init_screen_resolution()
@@ -65,46 +62,19 @@ class EyeInfo:
                         'y':float(row['screen_y'])
                     }
                     self.prediction.append(prediction_point)
-
-        
-        
         except FileNotFoundError:
             print(f"File {self.dataset} not found.")
         except Exception as e:
             print(f"An error occurred while reading the CSV file: {str(e)}")
 
-    def get_right_eye(self):
-        right_x_values = []
-        right_y_values = []
-        for item in self.right_eye:
-            right_x_values.append(item['x'])
-            right_y_values.append(item['y'])
-        return right_x_values, right_y_values
-    
-    def get_left_eye(self):
-        left_x_values = []
-        left_y_values = []
-        for item in self.left_eye:
-            left_x_values.append(item['x'])
-            left_y_values.append(item['y'])
-        return left_x_values, left_y_values
-    
-    def get_predictions(self):
-        predict_x_values = []
-        predict_y_values = []
-        for item in self.prediction:
-            predict_x_values.append(item['x'])
-            predict_y_values.append(item['y'])
-        return predict_x_values, predict_y_values
-    
-    def get_calib(self):
-        calib_x_values = []
-        calib_y_values = []
-        for item in self.calib_points:
-            calib_x_values.append(item['x'])
-            calib_y_values.append(item['y'])
-        return calib_x_values, calib_y_values 
-  
+    def get_points(self, objArr):
+        x_values = []
+        y_values = []
+        for item in objArr:
+            x_values.append(item['x'])
+            y_values.append(item['y'])
+        return x_values, y_values
+
     def randomize_points(self, num_objects):
         objects_right = []
         objects_left = []
