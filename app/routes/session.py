@@ -138,6 +138,44 @@ def update_session_by_id():
     return Response(f'Session updated with id {id}', status=200, mimetype='application/json')
 
 
+def calib_results():
+    fixed_points = json.loads(request.form['fixed_circle_iris_points'])
+    calib_points = json.loads(request.form['calib_circle_iris_points'])
+
+    # Generate csv dataset of calibration points
+    os.makedirs(
+        f'{Path().absolute()}/public/calib_test/', exist_ok=True)
+    csv_file = f'{Path().absolute()}/public/calib_test/fixed_train_data.csv'
+    csv_columns = ['left_iris_x', 'left_iris_y',
+                   'right_iris_x', 'right_iris_y', 'point_x', 'point_y']
+    try:
+        with open(csv_file, 'w') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+            writer.writeheader()
+            for data in fixed_points:
+                writer.writerow(data)
+    except IOError:
+        print("I/O error")
+
+    # Generate csv of iris points of session
+    os.makedirs(
+        f'{Path().absolute()}/public/calib_test/', exist_ok=True)
+    csv_file = f'{Path().absolute()}/public/calib_test/predict_train_data.csv'
+    csv_columns = ['left_iris_x', 'left_iris_y',
+                   'right_iris_x', 'right_iris_y']
+    try:
+        with open(csv_file, 'w') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+            writer.writeheader()
+            for data in calib_points:
+                writer.writerow(data)
+    except IOError:
+        print("I/O error")
+
+    data = gaze_tracker.train_to_validate_calib()
+    
+    return Response(json.dumps(data), status=200, mimetype='application/json')
+
 def session_results():
     session_id = request.args.__getitem__('id')
 

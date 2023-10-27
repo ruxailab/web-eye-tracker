@@ -1,9 +1,44 @@
 import numpy as np
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_squared_log_error 
+from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_squared_log_error
 import pandas as pd
 from pathlib import Path
+
+
+def train_to_validate_calib():
+    dataset_train_path = f'{Path().absolute()}/public/calib_test/fixed_train_data.csv'
+    dataset_predict_path = f'{Path().absolute()}/public/calib_test/predict_train_data.csv'
+
+    # Carregue os dados de treinamento a partir do CSV
+    data = pd.read_csv(dataset_train_path)
+
+    # Para evitar que retorne valores negativos: Aplicar uma transformação logarítmica aos rótulos (point_x e point_y)
+    # data['point_x'] = np.log(data['point_x'])
+    # data['point_y'] = np.log(data['point_y'])
+
+    # Separe os recursos (X) e os rótulos (y)
+    X = data[['left_iris_x', 'left_iris_y', 'right_iris_x', 'right_iris_y']]
+    y = data[['point_x', 'point_y']]
+
+    # Crie e ajuste um modelo de regressão linear
+    model = linear_model.LinearRegression()
+    model.fit(X, y)
+
+    # Carregue os dados de teste a partir de um novo arquivo CSV
+    dados_teste = pd.read_csv(dataset_predict_path)
+
+    # Faça previsões
+    previsoes = model.predict(dados_teste)
+
+    # Para evitar que retorne valores negativos: Inverter a transformação logarítmica nas previsões
+    # previsoes = np.exp(previsoes)
+
+    # Exiba as previsões
+    print("Previsões de point_x e point_y:")
+    print(previsoes)
+    return previsoes.tolist()
+
 
 def train_model(session_id):
     # Download dataset
@@ -18,7 +53,7 @@ def train_model(session_id):
     train_stats = train_stats.transpose()
 
     dataset_t = raw_dataset
-    dataset_s = session_dataset.drop(['timestamp'], axis = 1)
+    dataset_s = session_dataset.drop(['timestamp'], axis=1)
 
     # Drop the columns that will be predicted
     X = dataset_t.drop(['timestamp', 'mouse_x', 'mouse_y'], axis=1)
@@ -37,7 +72,7 @@ def train_model(session_id):
     GAZE_X = np.abs(GAZE_X)
     GAZE_Y = np.abs(GAZE_Y)
 
-    return {"x": GAZE_X,"y": GAZE_Y}
+    return {"x": GAZE_X, "y": GAZE_Y}
 
 
 def model_for_mouse_x(X, Y1):
@@ -53,20 +88,23 @@ def model_for_mouse_x(X, Y1):
 
     Y1_test = normalizeData(Y1_test)
     Y1_pred_test = normalizeData(Y1_pred_test)
-    
-    print(f'Mean absolute error MAE = {mean_absolute_error(Y1_test, Y1_pred_test)}')
-    print(f'Mean squared error MSE = {mean_squared_error(Y1_test, Y1_pred_test)}')
-    print(f'Mean squared log error MSLE = {mean_squared_log_error(Y1_test, Y1_pred_test)}')
+
+    print(
+        f'Mean absolute error MAE = {mean_absolute_error(Y1_test, Y1_pred_test)}')
+    print(
+        f'Mean squared error MSE = {mean_squared_error(Y1_test, Y1_pred_test)}')
+    print(
+        f'Mean squared log error MSLE = {mean_squared_log_error(Y1_test, Y1_pred_test)}')
     print(f'MODEL X SCORE R2 = {model.score(X, Y1)}')
-    
 
     # print(f'TRAIN{Y1_pred_train}')
     # print(f'TEST{Y1_pred_test}')
     return model
 
+
 def model_for_mouse_y(X, Y2):
     print('-----------------MODEL FOR Y------------------')
-     # split dataset into train and test sets (80/20 where 20 is for test)
+    # split dataset into train and test sets (80/20 where 20 is for test)
     X_train, X_test, Y2_train, Y2_test = train_test_split(X, Y2, test_size=0.2)
 
     model = linear_model.LinearRegression()
@@ -75,18 +113,21 @@ def model_for_mouse_y(X, Y2):
     Y2_pred_train = model.predict(X_train)
     Y2_pred_test = model.predict(X_test)
 
-
     Y2_test = normalizeData(Y2_test)
     Y2_pred_test = normalizeData(Y2_pred_test)
 
-    print(f'Mean absolute error MAE = {mean_absolute_error(Y2_test, Y2_pred_test)}')
-    print(f'Mean squared error MSE = {mean_squared_error(Y2_test, Y2_pred_test)}')
-    print(f'Mean squared log error MSLE = {mean_squared_log_error(Y2_test, Y2_pred_test)}')
+    print(
+        f'Mean absolute error MAE = {mean_absolute_error(Y2_test, Y2_pred_test)}')
+    print(
+        f'Mean squared error MSE = {mean_squared_error(Y2_test, Y2_pred_test)}')
+    print(
+        f'Mean squared log error MSLE = {mean_squared_log_error(Y2_test, Y2_pred_test)}')
     print(f'MODEL X SCORE R2 = {model.score(X, Y2)}')
 
     # print(f'TRAIN{Y2_pred_train}')
     print(f'TEST{Y2_pred_test}')
     return model
+
 
 def normalizeData(data):
     return (data - np.min(data)) / (np.max(data) - np.min(data))
