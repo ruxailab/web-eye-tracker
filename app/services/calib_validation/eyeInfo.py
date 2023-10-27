@@ -3,7 +3,7 @@ import csv
 import tkinter as tk
 
 class EyeInfo:
-    def __init__(self, right_eye =[], left_eye=[], prediction=[], calib_points=[], dataset='./data.csv', screen_width=0, screen_height=0, k_screen_width = 1872, k_screen_height = 944):
+    def __init__(self, right_eye =[], left_eye=[], prediction=[], calib_points=[], dataset='./data.csv', screen_width=0, screen_height=0, k_screen_width = 1872, k_screen_height = 944, right = True, left = True):
             self.right_eye = right_eye
             self.left_eye = left_eye
             self.prediction = prediction
@@ -13,6 +13,8 @@ class EyeInfo:
             self.screen_height = screen_height
             self.k_screen_width = k_screen_width
             self.k_screen_height = k_screen_height
+            self.right = right
+            self.left = left
 
     def init_calib_points(self):
         if self.calib_points:
@@ -44,19 +46,19 @@ class EyeInfo:
             with open(self.dataset, 'r', newline='') as file:
                 csv_reader = csv.DictReader(file)
                 for row in csv_reader:
-                    right_eye_point = {
-                        'x': float(row['right_iris_x']),
-                        'y': float(row['right_iris_y'])
-                    }
-                    self.right_eye.append(right_eye_point)
-
-                    left_eye_point = {
-                        'x': float(row['left_iris_x']),
-                        'y': float(row['left_iris_y'])
-                    }
-                    self.left_eye.append(left_eye_point)
-                    x =float(row['screen_x'])
-                    y =float(row['screen_y'])
+                    if self.right:
+                        right_eye_point = {
+                            'x': float(row['right_iris_x']),
+                            'y': float(row['right_iris_y'])
+                        }
+                        self.right_eye.append(right_eye_point)
+                    if self.left:
+                        left_eye_point = {
+                            'x': float(row['left_iris_x']),
+                            'y': float(row['left_iris_y'])
+                        }
+                        self.left_eye.append(left_eye_point)
+                        
                     prediction_point = {
                         'x':float(row['screen_x']),
                         'y':float(row['screen_y'])
@@ -74,6 +76,14 @@ class EyeInfo:
             x_values.append(item['x'])
             y_values.append(item['y'])
         return x_values, y_values
+    
+    def get_max_object(self,key):
+        max_object = max(self.prediction, key=lambda obj: obj[f'{key}'])
+        return max_object
+    
+    def get_min_object(self,key):
+        max_object = min(self.prediction, key=lambda obj: obj[f'{key}'])
+        return max_object
 
     def randomize_points(self, num_objects):
         objects_right = []
