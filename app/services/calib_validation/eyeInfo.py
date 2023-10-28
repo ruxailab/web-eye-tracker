@@ -3,7 +3,7 @@ import tkinter as tk
 import pandas as pd
 
 class EyeInfo:
-    def __init__(self,  calib_points=[], dataset='./data.csv', screen_width=0, screen_height=0, k_screen_width = 1872, k_screen_height = 944, is_right = True, is_left = True):
+    def __init__(self,  calib_points=[], dataset='./data.csv', screen_width=0, screen_height=0, k_screen_width = 1872, k_screen_height = 944, is_right = False, is_left = False):
             self.is_right = is_right
             self.is_left = is_left
             self.dataset = dataset
@@ -48,8 +48,6 @@ class EyeInfo:
             self.calib_df = df
 
     def init_points(self):
-        # m_factorx = self.screen_width/self.k_screen_width
-        # m_factory = self.screen_height/self.k_screen_height
         try:
             data = pd.read_csv(self.dataset)
             if self.is_right:
