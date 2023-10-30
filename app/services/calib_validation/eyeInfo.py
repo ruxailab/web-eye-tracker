@@ -16,7 +16,6 @@ class EyeInfo:
             self.calib_points = calib_points
             self.calib_df = None
 
-            
 
             self.screen_width = screen_width
             self.screen_height = screen_height
@@ -37,12 +36,16 @@ class EyeInfo:
         root.destroy()
 
     def init_calib_points(self):
+        # xf = self.screen_width/self.k_screen_width
+        # yf = self.screen_height/self.k_screen_height
+        xf = 1
+        yf = 1
         if self.calib_points:
             post_calib = []
             for point in self.calib_points:
                 calibrated_point = {
-                    "screen_x": point["x"],
-                    "screen_y": point["y"]
+                    "screen_x": point["x"]*xf,
+                    "screen_y": point["y"]*yf
                 }
                 post_calib.append(calibrated_point)
             df = pd.DataFrame(post_calib)
