@@ -3,9 +3,10 @@ import tkinter as tk
 import pandas as pd
 
 class EyeInfo:
-    def __init__(self,  calib_points=[], dataset='./data.csv', screen_width=0, screen_height=0, k_screen_width = 1872, k_screen_height = 944, is_right = False, is_left = False):
+    def __init__(self,  calib_points=[], dataset='./data.csv', screen_width=0, screen_height=0, k_screen_width = 1872, k_screen_height = 944, is_right = False, is_left = False, is_mean = False):
             self.is_right = is_right
             self.is_left = is_left
+            self.is_mean = is_mean
             self.dataset = dataset
 
             self.right_eye_df = None
@@ -56,6 +57,10 @@ class EyeInfo:
             if self.is_left:
                 self.left_eye_df = data[['left_iris_x', 'left_iris_y']]
 
+            if self.is_mean:
+                self.right_eye_df = data[['right_iris_x', 'right_iris_y']]
+                self.left_eye_df = data[['left_iris_x', 'left_iris_y']]
+                
             self.prediction_df = data[['screen_x', 'screen_y']]
 
         except FileNotFoundError:
