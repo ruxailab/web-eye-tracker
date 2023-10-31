@@ -44,7 +44,8 @@ class EyeInfo:
             for point in self.calib_points:
                 calibrated_point = {
                     "screen_x": point["x"]*xf,
-                    "screen_y": point["y"]*yf
+                    "screen_y": point["y"]*yf,
+                    "order":    point["order"]
                 }
                 post_calib.append(calibrated_point)
             df = pd.DataFrame(post_calib)
