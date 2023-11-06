@@ -81,9 +81,10 @@ class EyeInfo:
         except Exception as e:
             print(f"An error occurred while reading the CSV file: {str(e)}")
     
-    def plot(self, dataset, key_x, key_y, is_subset, subset_size, lock_plot):
+    def plot(self, dataset, key_x, key_y, is_subset, subset_size, lock_plot, eyes_only):
         sns.set(style="whitegrid")
-        sns.scatterplot(data=self.calib_df, x=f'{key_x}', y=f'{key_y}',size='order', color=self.palette['calib_df'])
+        if not eyes_only:
+            sns.scatterplot(data=self.calib_df, x='screen_x', y='screen_y',size='order', color=self.palette['calib_df'])
         if is_subset:
             subset_df1r = dataset.iloc[0:subset_size]
             subset_df2r = dataset.iloc[subset_size:subset_size*2]
@@ -91,11 +92,11 @@ class EyeInfo:
             subset_df4r = dataset.iloc[subset_size*3:subset_size*4]
             subset_df5r = dataset.iloc[subset_size*4:subset_size*5]
             
-            sns.scatterplot(data=subset_df1r, x=f'{key_x}', y=f'{key_y}', color=self.palette['first'])
-            sns.scatterplot(data=subset_df2r, x=f'{key_x}', y=f'{key_y}', color=self.palette['second'])
-            sns.scatterplot(data=subset_df3r, x=f'{key_x}', y=f'{key_y}', color=self.palette['third'])
-            sns.scatterplot(data=subset_df4r, x=f'{key_x}', y=f'{key_y}', color=self.palette['fourth'])
-            sns.scatterplot(data=subset_df5r, x=f'{key_x}', y=f'{key_y}', color=self.palette['fifth'])
+            sns.scatterplot(data=subset_df1r, x=key_x, y=key_y, color=self.palette['first'])
+            sns.scatterplot(data=subset_df2r, x=key_x, y=key_y, color=self.palette['second'])
+            sns.scatterplot(data=subset_df3r, x=key_x, y=key_y, color=self.palette['third'])
+            sns.scatterplot(data=subset_df4r, x=key_x, y=key_y, color=self.palette['fourth'])
+            sns.scatterplot(data=subset_df5r, x=key_x, y=key_y, color=self.palette['fifth'])
             for color, label in self.legend_dict.items():
                 plt.scatter([], [], c=color, label=label)
             plt.legend()
