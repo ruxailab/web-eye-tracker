@@ -81,10 +81,10 @@ class EyeInfo:
         except Exception as e:
             print(f"An error occurred while reading the CSV file: {str(e)}")
     
-    def plot(self, datasets, keys_x, keys_y, is_subset, subset_size, lock_plot, eyes_only, colors=[]):
+    def plot(self, datasets, keys_x, keys_y, is_subset, subset_size, lock_plot, eyes_only, ax, colors=[]):
         sns.set(style="whitegrid")
         if not eyes_only:
-            sns.scatterplot(data=self.calib_df, x='screen_x', y='screen_y',size='order', color=self.palette['calib_df'])
+            sns.scatterplot(data=self.calib_df, x='screen_x', y='screen_y',size='order', color=self.palette['calib_df'], ax=ax)
         for i in range(len(datasets)):
             if is_subset:
                 subset_df1r = datasets[i].iloc[0:subset_size]
@@ -93,21 +93,16 @@ class EyeInfo:
                 subset_df4r = datasets[i].iloc[subset_size*3:subset_size*4]
                 subset_df5r = datasets[i].iloc[subset_size*4:subset_size*5]
 
-                sns.scatterplot(data=subset_df1r, x=keys_x[i], y=keys_y[i], color=self.palette['first'])
-                sns.scatterplot(data=subset_df2r, x=keys_x[i], y=keys_y[i], color=self.palette['second'])
-                sns.scatterplot(data=subset_df3r, x=keys_x[i], y=keys_y[i], color=self.palette['third'])
-                sns.scatterplot(data=subset_df4r, x=keys_x[i], y=keys_y[i], color=self.palette['fourth'])
-                sns.scatterplot(data=subset_df5r, x=keys_x[i], y=keys_y[i], color=self.palette['fifth'])
+                sns.scatterplot(data=subset_df1r, x=keys_x[i], y=keys_y[i], color=self.palette['first'], ax=ax)
+                sns.scatterplot(data=subset_df2r, x=keys_x[i], y=keys_y[i], color=self.palette['second'], ax=ax)
+                sns.scatterplot(data=subset_df3r, x=keys_x[i], y=keys_y[i], color=self.palette['third'], ax=ax)
+                sns.scatterplot(data=subset_df4r, x=keys_x[i], y=keys_y[i], color=self.palette['fourth'], ax=ax)
+                sns.scatterplot(data=subset_df5r, x=keys_x[i], y=keys_y[i], color=self.palette['fifth'], ax=ax)
             else:
-                sns.scatterplot(data=datasets[i], x=f'{keys_x[i]}', y=f'{keys_y[i]}', color=colors[i])
-        
-        if is_subset:
-            for color, label in self.legend_dict.items():
-                plt.scatter([], [], c=color, label=label)
-            plt.legend()
-        plt.xlabel('')
-        plt.ylabel('')
+                sns.scatterplot(data=datasets[i], x=f'{keys_x[i]}', y=f'{keys_y[i]}', color=colors[i], ax=ax)
         if lock_plot:
             plt.xlim(0, self.screen_width)
             plt.ylim(0, self.screen_height)
-        plt.show()
+        ax.set_xlabel('')
+        ax.set_ylabel('')
+        ax.grid(True)
