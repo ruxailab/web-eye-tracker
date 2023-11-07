@@ -20,22 +20,17 @@ class EyeInfo:
             self.screen_width = screen_width
             self.screen_height = screen_height
 
-            self.palette = {
-                'calib_df': 'black',
-                'first': 'blue',
-                'second': 'red',
-                'third': 'green',
-                'fourth': 'yellow',
-                'fifth':'lightgreen'
-            }
-
-            self.legend_dict = {
-                self.palette['first']: 'Cluster 1',
-                self.palette['second']: 'Cluster 2',
-                self.palette['third']: 'Cluster 3',
-                self.palette['fourth']: 'Cluster 4',
-                self.palette['fifth']: 'Cluster 5',
-            }
+            self.palette = [
+                'blue', 
+                'red',
+                'green',
+                'yellow',
+                'lightgreen',
+                'purple',
+                'orange',
+                'pink',
+                'turquoise'
+            ]
 
     def init_eye(self):
         self.init_screen_resolution()
@@ -84,20 +79,16 @@ class EyeInfo:
     def plot(self, datasets, keys_x, keys_y, is_subset, subset_size, lock_plot, eyes_only, ax, colors=[]):
         sns.set(style="whitegrid")
         if not eyes_only:
-            sns.scatterplot(data=self.calib_df, x='screen_x', y='screen_y',size='order', color=self.palette['calib_df'], ax=ax)
+            sns.scatterplot(data=self.calib_df, x='screen_x', y='screen_y',size='order', color='black', ax=ax)
         for i in range(len(datasets)):
             if is_subset:
-                subset_df1r = datasets[i].iloc[0:subset_size]
-                subset_df2r = datasets[i].iloc[subset_size:subset_size*2]
-                subset_df3r = datasets[i].iloc[subset_size*2:subset_size*3]
-                subset_df4r = datasets[i].iloc[subset_size*3:subset_size*4]
-                subset_df5r = datasets[i].iloc[subset_size*4:subset_size*5]
+                for j in range(len(self.calib_points)):
+                    start_index = j * subset_size
+                    end_index = (j + 1) * subset_size
 
-                sns.scatterplot(data=subset_df1r, x=keys_x[i], y=keys_y[i], color=self.palette['first'], ax=ax)
-                sns.scatterplot(data=subset_df2r, x=keys_x[i], y=keys_y[i], color=self.palette['second'], ax=ax)
-                sns.scatterplot(data=subset_df3r, x=keys_x[i], y=keys_y[i], color=self.palette['third'], ax=ax)
-                sns.scatterplot(data=subset_df4r, x=keys_x[i], y=keys_y[i], color=self.palette['fourth'], ax=ax)
-                sns.scatterplot(data=subset_df5r, x=keys_x[i], y=keys_y[i], color=self.palette['fifth'], ax=ax)
+                    subset_df = datasets[i].iloc[start_index:end_index]
+
+                    sns.scatterplot(data=subset_df, x=keys_x[i], y=keys_y[i], color=self.palette[j], ax=ax)
             else:
                 sns.scatterplot(data=datasets[i], x=f'{keys_x[i]}', y=f'{keys_y[i]}', color=colors[i], ax=ax)
         if lock_plot:
