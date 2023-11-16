@@ -24,4 +24,6 @@ firebase_admin.initialize_app(cred, {
 })
 
 if __name__ == "__main__":
-    app.run(debug=os.environ['FLASK_ENV'])
+    # app.run(debug=os.environ['FLASK_ENV'])
+    app.run(debug=True)
+

@@ -139,13 +139,14 @@ def update_session_by_id():
 
 
 def calib_results():
+    file_name = json.loads(request.form['file_name'])
     fixed_points = json.loads(request.form['fixed_circle_iris_points'])
     calib_points = json.loads(request.form['calib_circle_iris_points'])
 
     # Generate csv dataset of calibration points
     os.makedirs(
-        f'{Path().absolute()}/public/calib_test/', exist_ok=True)
-    csv_file = f'{Path().absolute()}/public/calib_test/fixed_train_data.csv'
+        f'{Path().absolute()}/app/services/calib_validation/csv/data/', exist_ok=True)
+    csv_file = f'{Path().absolute()}/app/services/calib_validation/csv/data/{file_name}_fixed_train_data.csv'
     csv_columns = ['left_iris_x', 'left_iris_y',
                    'right_iris_x', 'right_iris_y', 'point_x', 'point_y']
     try:
@@ -159,8 +160,8 @@ def calib_results():
 
     # Generate csv of iris points of session
     os.makedirs(
-        f'{Path().absolute()}/public/calib_test/', exist_ok=True)
-    csv_file = f'{Path().absolute()}/public/calib_test/predict_train_data.csv'
+        f'{Path().absolute()}/app/services/calib_validation/csv/data/', exist_ok=True)
+    csv_file = f'{Path().absolute()}/app/services/calib_validation/csv/data/{file_name}_predict_train_data.csv'
     csv_columns = ['left_iris_x', 'left_iris_y',
                    'right_iris_x', 'right_iris_y']
     try:
