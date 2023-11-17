@@ -1,4 +1,4 @@
-from screeninfo import get_monitors
+# from screeninfo import get_monitors
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -33,20 +33,20 @@ class EyeInfo:
             ]
 
     def init_eye(self):
-        self.init_screen_resolution()
+        # self.init_screen_resolution()
         self.init_calib_points()
         self.init_points()
         
 
-    def init_screen_resolution(self):
-        monitors = get_monitors()
-        if monitors:
-            primary_monitor = monitors[0]
-            self.screen_width = primary_monitor.width 
-            self.screen_height = primary_monitor.height
-        else:
-            self.screen_width = self.screen_width
-            self.screen_height = self.screen_height
+    # def init_screen_resolution(self):
+    #     monitors = get_monitors()
+    #     if monitors:
+    #         primary_monitor = monitors[0]
+    #         self.screen_width = primary_monitor.width 
+    #         self.screen_height = primary_monitor.height
+    #     else:
+    #         self.screen_width = self.screen_width
+    #         self.screen_height = self.screen_height
 
     def init_calib_points(self):
         if self.calib_points:
