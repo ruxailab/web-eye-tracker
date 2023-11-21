@@ -7,3 +7,4 @@ serviceAccountKey.json
 /public/training
 /public/sessions
 /venv
+/app/services/calib_validation/csv/data
