@@ -78,8 +78,6 @@ class EyeInfo:
     
     def plot(self, datasets, keys_x, keys_y, is_subset, subset_size, lock_plot, eyes_only, ax, colors=[]):
         sns.set(style="whitegrid")
-        if not eyes_only:
-            sns.scatterplot(data=self.calib_df, x='screen_x', y='screen_y',size='order', color='black', ax=ax)
         for i in range(len(datasets)):
             if is_subset:
                 for j in range(len(self.calib_points)):
@@ -87,6 +85,9 @@ class EyeInfo:
                     end_index = (j + 1) * subset_size
 
                     subset_df = datasets[i].iloc[start_index:end_index]
+                    if not eyes_only:
+                        sub_calib_df = self.calib_df.iloc[[j]]
+                        sns.scatterplot(data=sub_calib_df, x='screen_x', y='screen_y', marker='*', color=self.palette[j], s=150)
 
                     sns.scatterplot(data=subset_df, x=keys_x[i], y=keys_y[i], color=self.palette[j], ax=ax)
             else:
