@@ -142,18 +142,22 @@ def calib_results():
     file_name = json.loads(request.form['file_name'])
     fixed_points = json.loads(request.form['fixed_circle_iris_points'])
     calib_points = json.loads(request.form['calib_circle_iris_points'])
+    screen_height = json.loads(request.form['screen_height'])
+    screen_width = json.loads(request.form['screen_width'])
 
     # Generate csv dataset of calibration points
     os.makedirs(
         f'{Path().absolute()}/app/services/calib_validation/csv/data/', exist_ok=True)
     calib_csv_file = f'{Path().absolute()}/app/services/calib_validation/csv/data/{file_name}_fixed_train_data.csv'
     csv_columns = ['left_iris_x', 'left_iris_y',
-                   'right_iris_x', 'right_iris_y', 'point_x', 'point_y']
+                   'right_iris_x', 'right_iris_y', 'point_x', 'point_y','screen_height', 'screen_width']
     try:
         with open(calib_csv_file, 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
             writer.writeheader()
             for data in fixed_points:
+                data['screen_height'] = screen_height
+                data['screen_width'] = screen_width
                 writer.writerow(data)
     except IOError:
         print("I/O error")
