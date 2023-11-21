@@ -6,9 +6,9 @@ import pandas as pd
 from pathlib import Path
 
 
-def train_to_validate_calib():
-    dataset_train_path = f'{Path().absolute()}/public/calib_test/fixed_train_data.csv'
-    dataset_predict_path = f'{Path().absolute()}/public/calib_test/predict_train_data.csv'
+def train_to_validate_calib(calib_csv_file, predict_csv_file):
+    dataset_train_path = calib_csv_file
+    dataset_predict_path = predict_csv_file
 
     # Carregue os dados de treinamento a partir do CSV
     data = pd.read_csv(dataset_train_path)

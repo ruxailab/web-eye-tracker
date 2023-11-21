@@ -146,11 +146,11 @@ def calib_results():
     # Generate csv dataset of calibration points
     os.makedirs(
         f'{Path().absolute()}/app/services/calib_validation/csv/data/', exist_ok=True)
-    csv_file = f'{Path().absolute()}/app/services/calib_validation/csv/data/{file_name}_fixed_train_data.csv'
+    calib_csv_file = f'{Path().absolute()}/app/services/calib_validation/csv/data/{file_name}_fixed_train_data.csv'
     csv_columns = ['left_iris_x', 'left_iris_y',
                    'right_iris_x', 'right_iris_y', 'point_x', 'point_y']
     try:
-        with open(csv_file, 'w') as csvfile:
+        with open(calib_csv_file, 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
             writer.writeheader()
             for data in fixed_points:
@@ -161,11 +161,11 @@ def calib_results():
     # Generate csv of iris points of session
     os.makedirs(
         f'{Path().absolute()}/app/services/calib_validation/csv/data/', exist_ok=True)
-    csv_file = f'{Path().absolute()}/app/services/calib_validation/csv/data/{file_name}_predict_train_data.csv'
+    predict_csv_file = f'{Path().absolute()}/app/services/calib_validation/csv/data/{file_name}_predict_train_data.csv'
     csv_columns = ['left_iris_x', 'left_iris_y',
                    'right_iris_x', 'right_iris_y']
     try:
-        with open(csv_file, 'w') as csvfile:
+        with open(predict_csv_file, 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
             writer.writeheader()
             for data in calib_points:
@@ -173,7 +173,7 @@ def calib_results():
     except IOError:
         print("I/O error")
 
-    data = gaze_tracker.train_to_validate_calib()
+    data = gaze_tracker.train_to_validate_calib(calib_csv_file, predict_csv_file)
     
     return Response(json.dumps(data), status=200, mimetype='application/json')
 
