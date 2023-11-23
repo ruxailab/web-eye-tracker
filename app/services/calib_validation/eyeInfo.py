@@ -85,9 +85,14 @@ class EyeInfo:
                     end_index = (j + 1) * subset_size
 
                     subset_df = datasets[i].iloc[start_index:end_index]
+                    centroid_x = subset_df[keys_x[i]].mean()
+                    centroid_y = subset_df[keys_y[i]].mean()
+                    centroid_df = pd.DataFrame({'x': [centroid_x], 'y': [centroid_y]})
                     if not eyes_only:
                         sub_calib_df = self.calib_df.iloc[[j]]
                         sns.scatterplot(data=sub_calib_df, x='screen_x', y='screen_y', marker='*', color=self.palette[j], s=150)
+                        sns.scatterplot(data=centroid_df,x='x', y='y', markers='x',s=500, color=self.palette[j], alpha=0.5)
+
 
                     sns.scatterplot(data=subset_df, x=keys_x[i], y=keys_y[i], color=self.palette[j], ax=ax)
             else:
