@@ -1,3 +1,4 @@
+python-decouple==3.8
 autopep8==1.5.6
 bidict==0.21.2
 CacheControl==0.12.6
