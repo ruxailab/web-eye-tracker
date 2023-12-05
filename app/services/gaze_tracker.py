@@ -1,9 +1,80 @@
-import numpy as np
-from sklearn import linear_model
+from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_squared_log_error, r2_score
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_squared_log_error
-import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn import linear_model
 from pathlib import Path
+import pandas as pd
+import numpy as np
+
+
+def predict(data):
+
+    df = pd.read_csv(data)
+    df = df.drop(['screen_height', 'screen_width'], axis=1)
+
+    X_x = df[['left_iris_x', 'right_iris_x']]
+    y_x = df['point_x']
+
+    sc = StandardScaler()
+    X_x = sc.fit_transform(X_x)
+
+    X_train_x, X_test_x, y_train_x, y_test_x = train_test_split(
+        X_x, y_x, test_size=0.2, random_state=42)
+
+    model_x = linear_model.LinearRegression()
+    model_x.fit(X_train_x, y_train_x)
+    y_pred_x = model_x.predict(X_test_x)
+
+    X_y = df[['left_iris_y', 'right_iris_y']]
+    y_y = df['point_y']
+
+    sc = StandardScaler()
+    X_y = sc.fit_transform(X_y)
+
+    X_train_y, X_test_y, y_train_y, y_test_y = train_test_split(
+        X_y, y_y, test_size=0.2, random_state=42)
+
+    model = linear_model.LinearRegression()
+    model.fit(X_train_y, y_train_y)
+    y_pred_y = model.predict(X_test_y)
+
+    y_test_x = np.array(y_test_x)
+    y_test_y = np.array(y_test_y)
+
+    true_points = [(y_test_x[i], y_test_y[i]) for i in range(len(y_test_x))]
+
+    error_range = 0.05
+
+    data = {}
+
+    for true_x, true_y in true_points:
+
+        x_within_range = [y_pred_x[j] for j in range(len(y_test_x)) if abs(
+            y_test_x[j] - true_x) <= error_range]
+        y_within_range = [y_pred_y[j] for j in range(len(y_test_y)) if abs(
+            y_test_y[j] - true_y) <= error_range]
+
+        if len(x_within_range) > 1 and len(y_within_range) > 1:
+
+            combined_predictions = x_within_range + y_within_range
+            combined_true = [true_x] * len(x_within_range) + \
+                [true_y] * len(y_within_range)
+
+            r2_combined = r2_score(combined_true, combined_predictions)
+
+            outer_key = str(true_x)
+            inner_key = str(true_y)
+
+            if true_x not in data:
+                data[outer_key] = {}
+
+            data[outer_key][inner_key] = {
+                'predicted_x': y_pred_x.tolist(),
+                'predicted_y': y_pred_y.tolist(),
+                'r2_combined': r2_combined.tolist()
+            }
+
+    return data
 
 
 def train_to_validate_calib(calib_csv_file, predict_csv_file):
