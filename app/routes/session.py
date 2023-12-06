@@ -178,7 +178,7 @@ def calib_results():
         print("I/O error")
 
     #data = gaze_tracker.train_to_validate_calib(calib_csv_file, predict_csv_file)
-    data = gaze_tracker.predict(calib_csv_file)
+    data = gaze_tracker.predict(calib_csv_file, calib_csv_file)
     
     return Response(json.dumps(data), status=200, mimetype='application/json')
 

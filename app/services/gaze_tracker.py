@@ -7,72 +7,79 @@ import pandas as pd
 import numpy as np
 
 
-def predict(data):
+def predict(data, test_data):
 
     df = pd.read_csv(data)
     df = df.drop(['screen_height', 'screen_width'], axis=1)
 
-    X_x = df[['left_iris_x', 'right_iris_x']]
-    y_x = df['point_x']
+    df_test = pd.read_csv(test_data)
+    df_test = df_test.drop(['screen_height', 'screen_width'], axis=1)
+
+    X_train_x = df[['left_iris_x', 'right_iris_x']]
+    y_train_x = df['point_x']
 
     sc = StandardScaler()
-    X_x = sc.fit_transform(X_x)
+    X_train_x = sc.fit_transform(X_train_x)
 
-    X_train_x, X_test_x, y_train_x, y_test_x = train_test_split(
-        X_x, y_x, test_size=0.2, random_state=42)
+    X_test_x = df_test[['left_iris_x', 'right_iris_x']]
+    y_test_x = df_test['point_x']
+
+    sc = StandardScaler()
+    X_test_x = sc.fit_transform(X_test_x)
 
     model_x = linear_model.LinearRegression()
     model_x.fit(X_train_x, y_train_x)
     y_pred_x = model_x.predict(X_test_x)
 
-    X_y = df[['left_iris_y', 'right_iris_y']]
-    y_y = df['point_y']
+    X_train_y = df[['left_iris_y', 'right_iris_y']]
+    y_train_y = df['point_y']
 
     sc = StandardScaler()
-    X_y = sc.fit_transform(X_y)
+    X_train_y = sc.fit_transform(X_train_y)
 
-    X_train_y, X_test_y, y_train_y, y_test_y = train_test_split(
-        X_y, y_y, test_size=0.2, random_state=42)
+    X_test_y = df_test[['left_iris_y', 'right_iris_y']]
+    y_test_y = df_test['point_y']
+
+    sc = StandardScaler()
+    X_test_y = sc.fit_transform(X_test_y)
 
     model = linear_model.LinearRegression()
     model.fit(X_train_y, y_train_y)
     y_pred_y = model.predict(X_test_y)
 
-    y_test_x = np.array(y_test_x)
-    y_test_y = np.array(y_test_y)
+    data = {'True X': y_test_x, 'Predicted X': y_pred_x,
+            'True Y': y_test_y, 'Predicted Y': y_pred_y}
 
-    true_points = [(y_test_x[i], y_test_y[i]) for i in range(len(y_test_x))]
+    df_data = pd.DataFrame(data)
+    df_data['True XY'] = list(zip(df_data['True X'], df_data['True Y']))
 
-    error_range = 0.05
+    def func_x(group): return np.sqrt(
+        np.sum(np.square([group['Predicted X'], group['True X']])))
+
+    def func_y(group): return np.sqrt(
+        np.sum(np.square([group['Predicted Y'], group['True Y']])))
+
+    precision_x = df_data.groupby('True XY').apply(func_x)
+    precision_y = df_data.groupby('True XY').apply(func_y)
+
+    precision_xy = (precision_x + precision_y) / 2
+    precision_xy = precision_xy / np.mean(precision_xy)
 
     data = {}
 
-    for true_x, true_y in true_points:
+    for index, row in df_data.iterrows():
 
-        x_within_range = [y_pred_x[j] for j in range(len(y_test_x)) if abs(
-            y_test_x[j] - true_x) <= error_range]
-        y_within_range = [y_pred_y[j] for j in range(len(y_test_y)) if abs(
-            y_test_y[j] - true_y) <= error_range]
+        outer_key = str(row['True X'])
+        inner_key = str(row['True Y'])
 
-        if len(x_within_range) > 1 and len(y_within_range) > 1:
+        if outer_key not in data:
+            data[outer_key] = {}
 
-            combined_predictions = x_within_range + y_within_range
-            combined_true = [true_x] * len(x_within_range) + \
-                [true_y] * len(y_within_range)
-
-            r2_combined = r2_score(combined_true, combined_predictions)
-
-            outer_key = str(true_x)
-            inner_key = str(true_y)
-
-            if true_x not in data:
-                data[outer_key] = {}
-
-            data[outer_key][inner_key] = {
-                'predicted_x': y_pred_x.tolist(),
-                'predicted_y': y_pred_y.tolist(),
-                'r2_combined': r2_combined.tolist()
-            }
+        data[outer_key][inner_key] = {
+            'predicted_x': df_data[(df_data['True X'] == row['True X']) & (df_data['True Y'] == row['True Y'])]['Predicted X'].values.tolist(),
+            'predicted_y': df_data[(df_data['True X'] == row['True X']) & (df_data['True Y'] == row['True Y'])]['Predicted Y'].values.tolist(),
+            'PrecisionSD': precision_xy[(row['True X'], row['True Y'])]
+        }
 
     return data
 
