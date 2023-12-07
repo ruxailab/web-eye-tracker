@@ -53,17 +53,29 @@ def predict(data, test_data):
     df_data = pd.DataFrame(data)
     df_data['True XY'] = list(zip(df_data['True X'], df_data['True Y']))
 
-    def func_x(group): return np.sqrt(
+    def func_precision_x(group): return np.sqrt(
         np.sum(np.square([group['Predicted X'], group['True X']])))
 
-    def func_y(group): return np.sqrt(
+    def func_presicion_y(group): return np.sqrt(
         np.sum(np.square([group['Predicted Y'], group['True Y']])))
 
-    precision_x = df_data.groupby('True XY').apply(func_x)
-    precision_y = df_data.groupby('True XY').apply(func_y)
+    precision_x = df_data.groupby('True XY').apply(func_precision_x)
+    precision_y = df_data.groupby('True XY').apply(func_presicion_y)
 
     precision_xy = (precision_x + precision_y) / 2
     precision_xy = precision_xy / np.mean(precision_xy)
+
+    def func_accuracy_x(group): return np.sqrt(
+        np.sum(np.square([group['True X'] - group['Predicted X']])))
+
+    def func_accuracy_y(group): return np.sqrt(
+        np.sum(np.square([group['True Y'] - group['Predicted Y']])))
+
+    accuracy_x = df_data.groupby('True XY').apply(func_accuracy_x)
+    accuracy_y = df_data.groupby('True XY').apply(func_accuracy_y)
+
+    accuracy_xy = (accuracy_x + accuracy_y) / 2
+    accuracy_xy = accuracy_xy / np.mean(accuracy_xy)
 
     data = {}
 
@@ -78,7 +90,8 @@ def predict(data, test_data):
         data[outer_key][inner_key] = {
             'predicted_x': df_data[(df_data['True X'] == row['True X']) & (df_data['True Y'] == row['True Y'])]['Predicted X'].values.tolist(),
             'predicted_y': df_data[(df_data['True X'] == row['True X']) & (df_data['True Y'] == row['True Y'])]['Predicted Y'].values.tolist(),
-            'PrecisionSD': precision_xy[(row['True X'], row['True Y'])]
+            'PrecisionSD': precision_xy[(row['True X'], row['True Y'])],
+            'Accuracy': accuracy_xy[(row['True X'], row['True Y'])]
         }
 
     return data
