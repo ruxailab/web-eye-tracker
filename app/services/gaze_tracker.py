@@ -81,8 +81,8 @@ def predict(data, test_data):
 
     for index, row in df_data.iterrows():
 
-        outer_key = str(row['True X'])
-        inner_key = str(row['True Y'])
+        outer_key = str(row['True X']).split('.')[0]
+        inner_key = str(row['True Y']).split('.')[0]
 
         if outer_key not in data:
             data[outer_key] = {}
