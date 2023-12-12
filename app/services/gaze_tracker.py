@@ -1,13 +1,14 @@
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_squared_log_error, r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
 from sklearn import linear_model
 from pathlib import Path
 import pandas as pd
 import numpy as np
 
 
-def predict(data, test_data):
+def predict(data, test_data, k):
 
     df = pd.read_csv(data)
     df = df.drop(['screen_height', 'screen_width'], axis=1)
@@ -46,6 +47,10 @@ def predict(data, test_data):
     model = linear_model.LinearRegression()
     model.fit(X_train_y, y_train_y)
     y_pred_y = model.predict(X_test_y)
+
+    data = np.array([y_pred_x, y_pred_y]).T
+    model = KMeans(n_clusters=k, n_init='auto', init='k-means++')
+    y_kmeans = model.fit_predict(data)
 
     data = {'True X': y_test_x, 'Predicted X': y_pred_x,
             'True Y': y_test_y, 'Predicted Y': y_pred_y}
@@ -93,6 +98,8 @@ def predict(data, test_data):
             'PrecisionSD': precision_xy[(row['True X'], row['True Y'])],
             'Accuracy': accuracy_xy[(row['True X'], row['True Y'])]
         }
+
+    data['centroids'] = model.cluster_centers_.tolist()
 
     return data
 

@@ -144,6 +144,7 @@ def calib_results():
     calib_points = json.loads(request.form['calib_circle_iris_points'])
     screen_height = json.loads(request.form['screen_height'])
     screen_width = json.loads(request.form['screen_width'])
+    k = json.loads(request.form['k'])
 
     # Generate csv dataset of calibration points
     os.makedirs(
@@ -178,7 +179,7 @@ def calib_results():
         print("I/O error")
 
     #data = gaze_tracker.train_to_validate_calib(calib_csv_file, predict_csv_file)
-    data = gaze_tracker.predict(calib_csv_file, calib_csv_file)
+    data = gaze_tracker.predict(calib_csv_file, calib_csv_file, k)
     
     return Response(json.dumps(data), status=200, mimetype='application/json')
 
