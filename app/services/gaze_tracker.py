@@ -1,6 +1,7 @@
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_squared_log_error, r2_score
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
+from sklearn.pipeline import make_pipeline
 from sklearn.cluster import KMeans
 from sklearn import linear_model
 from pathlib import Path
@@ -8,7 +9,7 @@ import pandas as pd
 import numpy as np
 
 
-def predict(data, test_data, k):
+def predict(data, test_data, k, threshold=0):
 
     df = pd.read_csv(data)
     df = df.drop(['screen_height', 'screen_width'], axis=1)
@@ -28,9 +29,10 @@ def predict(data, test_data, k):
     sc = StandardScaler()
     X_test_x = sc.fit_transform(X_test_x)
 
-    model_x = linear_model.LinearRegression()
-    model_x.fit(X_train_x, y_train_x)
-    y_pred_x = model_x.predict(X_test_x)
+    model = make_pipeline(PolynomialFeatures(
+        2), linear_model.LinearRegression())
+    model.fit(X_train_x, y_train_x)
+    y_pred_x = model.predict(X_test_x)
 
     X_train_y = df[['left_iris_y', 'right_iris_y']]
     y_train_y = df['point_y']
@@ -44,7 +46,8 @@ def predict(data, test_data, k):
     sc = StandardScaler()
     X_test_y = sc.fit_transform(X_test_y)
 
-    model = linear_model.LinearRegression()
+    model = make_pipeline(PolynomialFeatures(
+        2), linear_model.LinearRegression())
     model.fit(X_train_y, y_train_y)
     y_pred_y = model.predict(X_test_y)
 
@@ -57,6 +60,15 @@ def predict(data, test_data, k):
 
     df_data = pd.DataFrame(data)
     df_data['True XY'] = list(zip(df_data['True X'], df_data['True Y']))
+
+    # remove unwanted data
+    df_data = df_data[(df_data['Predicted X'] >= 0) &
+                      (df_data['Predicted Y'] >= 0)]
+
+    if (threshold > 0):
+
+        df_data = df_data[(abs(df_data['Predicted X'] - df_data['True X']) >= threshold)
+                          & (abs(df_data['Predicted Y'] - df_data['True Y']) >= threshold)]
 
     def func_precision_x(group): return np.sqrt(
         np.sum(np.square([group['Predicted X'], group['True X']])))
