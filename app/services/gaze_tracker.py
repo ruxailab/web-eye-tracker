@@ -9,7 +9,7 @@ import pandas as pd
 import numpy as np
 
 
-def predict(data, test_data, k, threshold=0):
+def predict(data, test_data, k):
 
     df = pd.read_csv(data)
     df = df.drop(['screen_height', 'screen_width'], axis=1)
@@ -65,10 +65,6 @@ def predict(data, test_data, k, threshold=0):
     df_data = df_data[(df_data['Predicted X'] >= 0) &
                       (df_data['Predicted Y'] >= 0)]
 
-    if (threshold > 0):
-
-        df_data = df_data[(abs(df_data['Predicted X'] - df_data['True X']) >= threshold)
-                          & (abs(df_data['Predicted Y'] - df_data['True Y']) >= threshold)]
 
     def func_precision_x(group): return np.sqrt(
         np.sum(np.square([group['Predicted X'], group['True X']])))
