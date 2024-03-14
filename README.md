@@ -40,21 +40,6 @@ pip install -r requirements.txt
 flask run
 ```
 
-### 4. Setting up Firebase Project
-
-This backend uses Cloud Firestore as database. You will have to create a Firebase project and enable Cloud Firestore if you still want to use this configuration. 
-
-After having it created you will need to generate a service account json key. Save it in the **root** of the project with the name **serviceAccountKey.json**
-
-
-### 5. Deploy to Heroku
-
-This project has been configured to be deployed in production on Heroku. If you want to deploy it there, you will need to first create a project and link it to the code.
-
-### 6. GitHub CI/CD
-
-CI/CD from the github actions workflows is implmented for deploy on heroku. If you want to use the workflow for repository you can edit *.github/workflows/main.yml* file with your settings.
-
 ## 🧑‍🤝‍🧑 Contributing
 
 Anyone is free to contribute to this project. Just do a pull request with your code and if it is all good we will accept it. You can also help us look for bugs, if you find anything create and issue.
