@@ -1,7 +1,7 @@
 from flask import Flask, request, Response, send_file
 from app.services.storage import save_file_locally
 from app.models.session import Session
-from app.services import database as db
+#from app.services import database as db
 from app.services import gaze_tracker
 import time
 import json
